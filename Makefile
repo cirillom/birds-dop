@@ -1,17 +1,19 @@
-CC ?= gcc
+CC ?= g++
 ZIP ?= 7za
 PDFLAGS += -march=native
-CFLAGS += -Wall -Wextra -Wpedantic
-LDFLAGS += -lm
+CXXFLAGS += -Wall -Wextra -Wpedantic
+LDFLAGS += -lm -lstdc++
+
 VDFLAGS += --leak-check=full --show-leak-kinds=all -s
 
 SRCDIRS = $(sort $(dir $(wildcard src/*/)))
-INC_PARAMS = $(addprefix -I ,$(SRCDIRS))
+INCDIRS = $(shell find inc -type d)
+INC_PARAMS = $(addprefix -I,$(INCDIRS))
 
 EXECUTABLE ?= build/program
 
-ZIPFILE    ?= ../zipfile.zip
-CFILES      = $(wildcard src/*.c) $(wildcard src/**/*.c)
+ZIPFILE		?= ../zipfile.zip
+CPPFILES	= $(wildcard src/**/*.cpp src/*.cpp)
 
 .PHONY: all clean zip run test debug
 
@@ -28,14 +30,15 @@ zip: clean
 
 run: $(EXECUTABLE)
 	@./$(EXECUTABLE) $(ARGS)
+	python scripts/viewer.py
 
-debug: CFLAGS+= -g
+debug: CXXFLAGS += -g
 debug: clean
 debug: $(EXECUTABLE)
 
-$(EXECUTABLE): $(CFILES)
+$(EXECUTABLE): $(CPPFILES)
 	@mkdir -p build
-	$(CC) $(CFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
+	$(CC) $(CXXFLAGS) $(INC_PARAMS) -o $@ $^ $(LDFLAGS) $(PDFLAGS)
 
 valgrind: $(EXECUTABLE)
 	valgrind $(VDFLAGS) ./$(EXECUTABLE)
