@@ -30,7 +30,6 @@ zip: clean
 
 run: $(EXECUTABLE)
 	@./$(EXECUTABLE) $(ARGS)
-	python scripts/viewer.py
 
 debug: CXXFLAGS += -g
 debug: clean
