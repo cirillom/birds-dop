@@ -5,7 +5,7 @@
             "name": "gcc-10 - Build and debug project",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/astar",
+            "program": "${workspaceFolder}/build/program",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
